@@ -1,0 +1,13 @@
+
+
+SCANNING LiDAR-motorized opto-mechanical scanning
+High power consumption, susceptibility to vibration and mechanical shocks and its package size are significant drawbacks of this LiDAR type.
+
+NON-SCANNING FLASH LiDAR
+Has an array of photodetectors that simultaneously picks up the time-of-flight of each individual laser beam and provides a series of depth images where each pixel has been captured at the same time.
+
+OPTICAL PHASE ARRAY
+Able to shape the wave-front by delaying individual beams by varying amounts, which effectively steers the laser beam into different directions.
+
+FREQUENCY-MODULATED CONTINOUS WAVE LiDAR
+This LiDAR type sends out a constant stream of light and changes the frequency of that light at regular intervals.

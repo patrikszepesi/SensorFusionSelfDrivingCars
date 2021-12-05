@@ -1,0 +1,56 @@
+Non-Scanning Flash LiDAR
+This LiDAR type does not perform a sequential reconstruction of a scene by redirecting laser beams but instead illuminates everything at once, similar to a camera using a flash-light. Within such a flash LiDAR, an array of photodetectors simultaneously picks up the time-of-flight of each individual laser beam, providing a series of depth images where each pixel has been captured at the same time instant. As there are no moving parts, this sensor type is also referred to as "solid-state LiDAR".
+
+Since this method captures the entire scene in a single image compared to the mechanical laser scanning method, the data capture rate is much faster. Also, as each image is captured in a single flash, this scanning type achieves a higher robustness towards vibrations, which could otherwise distort the scanning process. The following figure visualizes the basic principle and compares it to the standard line-scanning technique we have already discussed previously as well as to a sequential raster-scanning technique in two dimensions.
+
+lidar vs radar https://www.wevolver.com/article/lidar-vs-radar-detection-tracking-and-imaging
+
+Optical phase array (OPA)
+Another sensor type belonging to the class of solid-state sensors is the Optical Phased Array (OPA) LiDAR. Other than flash LiDAR though, this sensor belongs to the class of scanning LiDARs, as the position of laser beam in the scene is actively directed. In an OPA system, an optical phase modulator is used to control the speed of light passing through the lens. OPA systems are able to shape the wave-front by delaying individual beams by varying amounts, which effectively steers the laser beam into different directions.
+
+OPA LiDAR principle
+OPA LiDAR principle
+
+In the schematic, there are multiple emitters, from which light waves with carefully controlled phase differences are emitted. As can be seen, the resulting combined wave front propagates in a direction \alphaα, which depends on the wavelength of the light, on the phase difference \PhiΦ between the emitters as well as on their spatial distance dd.
+
+Even though the OPA technology is very promising, it belongs to the least-developed types yet and has not been used on any meaningful scale in automotive applications. Also, at this point, beam steering with most OPA systems works only in a single plane, which effectively corresponds to the functionality of a line-scanner. Two-dimensional beam steering is possible though, but requires a significant research and development effort.
+
+MEMS Mirror-Based Quasi Solid-State LiDAR
+Lastly, there is another type of scanning LiDAR, which is a hybrid between the solid-state flash and OPA LiDARs and the motorized opto-mechanical scanner: A Micro-Electro-Mechanical Systems (MEMS) LiDAR system uses tiny mirrors whose tilt angle varies when applying a voltage. They thus substitute the mechanical scanning hardware with an electromechanical equivalent on the silicon.
+
+MEMS mirror-based LiDAR
+MEMS mirror-based LiDAR
+
+The following figure shows an example of a MEMS mirror:
+
+MEMS mirror example - a small mirror in the middle of a chip
+MEMS mirror example - Source
+
+MEMS mirrors are able to steer and modulate the light source and even control its phase. Compared to motorized scanners, MEMS scanners are superior in terms of size, scanning speed and also cost. Instead of moving the entire LiDAR unit, a MEMS device only needs to rotate the tiny mirror plates (whose diameter is in the range of 1–9 mm), while the rest of the system remains stationary. Due to the low moment of inertia of the tiny mirrors, a two dimensional scan over the entire field of view can be performed in a small fraction of a second, which is a clear advantage with regard to the real-time requirements of autonomous vehicles.
+
+Unlike a spinning LiDAR though, MEMS LiDAR systems have a limited field of view both in horizontal and in vertical directions, so multiple units have to be combined to generate a 360° scan. Also, due to the small size of the mirrors, beam divergence is higher for MEMS LiDARs, which currently limits their use to short-range applications mostly. As with OPA LiDARs, there are several start-up-companies working on improving MEMS LiDARs in the automotive context.
+
+Frequency-modulated continuous wave (FMCW) LiDAR
+While the methods listed so far are based on the time-of-flight principle using narrow light pulses, FMCW LiDAR sends out a constant stream of light (i.e. “continuous-wave”) and changes the frequency of that light at regular intervals (i.e. “frequency-modulated”). By measuring the phase and frequency of the returning light, an FMCW system is able to measure both distance (up to 300m) and velocity (by exploiting the Doppler effect). The following figure illustrates the principle:
+
+FMCW LiDAR principle
+FMCW LiDAR principle
+
+Assume the wave emitted at t = 0 encounters an object located at a range R moving at with a velocity of v_r . After a time \Delta_t = \frac{2R}{c}Δ
+t
+​
+ =
+c
+2R
+​
+ , the reflected wave reaches the transmitter-receiver, where it interferes with the wave emitted at that instant. The received wave will have a different frequency than the wave emitted at that instant due to two factors: the round-trip travel time \Delta_tΔ
+t
+​
+  determined by the range R of the object and the Doppler shift \Delta f_DΔf
+D
+​
+  due to the wave being reflected from an object moving at relative velocity. From the interference of the two waves, one can determine simultaneously both range and radial velocity of the object.
+
+Today's time-of-flight LiDAR (ToF) systems operate at wavelengths of 850 and 905 nm, which are very close to the visible light spectrum. On the one hand, protection of the eyes from radiation damage is a major concern, but on the other hand, this limits both the maximum laser power and the range of the systems. In addition, there is significant solar radiation in the range of 850 to 905 nm, which causes interference in daylight. FMCW systems on the other hand use a wavelength of 1550 nm, which means far fewer concerns with regard to eye safety and less interference from solar radiation.
+
+While FMCW LiDAR sensors have a great future ahead of them, they are still in an early development stage as of 2020. Until they reach maturity, the standard time-of-flight systems will remain the best choice for autonomous vehicles.

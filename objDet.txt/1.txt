@@ -1,0 +1,106 @@
+How large is the interval in ms in which an algorithm has to detect and classify objects, if the scanning frequency is at 10Hz?
+0.1 seconds,
+
+Correct! If the scanning frequency is as 10 Hz, the system needs to finish object detection every 1/10 of a second to perform in real-time. Otherwise, detection of the previous frame will still be ongoing when the new frame arrives.
+
+SUMMARY: 3 ways to feed data into the input layer of a network:
+1. use point cloud directly
+2. transform it to a volumetric shape such as voxels or pillars
+3. compact the 3d point cloud into a 2d projection along a specific axis(pros of this is that you can feed a 2d image into proven detectors such as YOLO or ResNet)
+
+Complex YOLO algorithm, is really fast and suitable for real time
+
+we can convert a 3d point cloud into a 2d BEV(birds eye view) which can be used as input to YOLO
+
+
+
+
+
+DATA REPRESENTATION:
+
+point cloud representations are required to have a structure that suits the need of the CNN,
+so that convolution operations can be efficiently applied. Let us now have a look at the available methods:
+
+Point based representation:
+take the raw and unfiltered input point cloud and transform it into a sparse representation
+this is a clustering based approach,
+points are assigned to the same cluster based on some criterion (e.g. spatial distance). In the next step,
+such methods extract a feature vector for each point by considering the neighboring clusters
+leave the structure of the point cloud intact so that no information is lost, e.g. due to clustering.
+However, one of the downsides of point-based approaches is their relatively high need for memory resources
+as a large number of points has to be transported through the processing pipeline.
+
+Voxel-based data representation:
+A voxel is defined as a volume element in a three-dimensional grid in space.
+A voxel-based approach assigns each point from the input point cloud to a specific volume element.
+Then, in the next step, local features are extracted from the group of points within each voxel.
+One of the most significant advantages of voxel-based methods is that they save memory resources
+as they reduce the number of elements that have to be held in memory simultaneously.
+
+
+Pillar-based data representation:
+An approach very similar to voxel-based representation is the pillar-based approach. Here, the point cloud is
+clustered not into cubic volume elements but instead into vertical columns rising up from the ground up.
+
+
+Projection-based data representation:
+While both voxel- and pillar-based algorithms cluster the point-cloud based on a spatial proximity measure,
+projection-based approaches reduce the dimensionality of the 3D point cloud along a specified dimension. In the literature,
+three major approaches can be identified, which are front view (RV), range view (RV) and bird's eye view (BEV).
+
+
+REVIEW:
+Takes the raw point cloud and transforms it to a sparse representation, akin to clustering: POINT BASED
+Extracts features from groups of points based on boxes made within a 3D volume, helping to save on memory resources: VOXEL BASED
+Clusters points into a vertical column: PILLAR BASED
+Utilizes the calibration of a camera sensor to project onto a 3D space: FRUSTRUM BASED
+Front view, range view, and bird’s eye view (BEV) are types of this data representation; helps to reduce dimensionality along a given dimension: PROJECTION BASED
+
+
+
+
+
+FEATURE EXTRACTION:
+
+After the point cloud has been transformed into a suitable representation (such as a BEV projection),
+the next step is to identify suitable features
+
+The type of features that are most commonly used are (1) local, (2) global and (3) contextual features:
+
+*Local features, which are often referred to as low-level features are usually obtained in a very early processing stage and contain precise information e.g. about the localization of individual elements of the data representation structure.
+*Global features, which are also called high-level-features, often encode the geometric structure of an element within the data representation structure in relation to its neighbors.
+*Contextual features are extracted during the last stage of the processing pipeline. These features aim at being accurately located and having rich semantic information such as object class, bounding box shape and size and the orientation of the object.
+
+In the following, we will look at a number of feature extractor classes found in the current literature:
+
+Point-wise feature extractors: entire point cloud is used as input.
+not yet suitable for use in autonomous driving due to high memory requirements and computational complexity.
+point-wise feature extractors analyze and label each point individually
+downsides of PointNet is its inability to capture local structure information between neighboring points,
+since features are learned individually for each point and the relation between points is ignored.
+
+
+Segment-wise feature extractors:
+The term "segment-wise" refers to the way how the point cloud is divided into spatial clusters
+(e.g. voxels, pillars or frustums). Once this has been done, a classification model
+is applied to each point of a segment to extract suitable volumetric features
+
+Convolutional Neural Networks (CNN):
+For years, CNN have been used successfully to detect and classify objects in camera images
+
+
+REVIEW:
+
+Shows promising results, but not yet suitable for autonomous driving due to high compute and memory requirements:POINT WISE
+A classification model is applied to each spatial cluster, helping to save on resources since it is applied at the cluster level: SEGMENT WISE
+Often also used for camera images, where the model can learn features on its own: CNN
+
+
+
+
+DETECTION AND PREDICTION REFINEMENT:
+
+Once features have been extracted from the input data, a detection network is needed to generate contextual features
+(e.g. object class, bounding box) and finally output the model predictions.
+YOLO, RCNN, FASTERRCNN and etc and how they work.
+YOLO IS faster bc its single step detector so we will use that.

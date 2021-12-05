@@ -1,0 +1,33 @@
+process follows a series of steps, which are
+
+filtering all the points which are outside of a defined area
+
+creating the actual BEV MAP by dividing the defined area into cells and by converting the metric coordinates of each point into grid coordinates
+
+computing height, intensity and density for each cell and converting the resulting values into 8 bit integers.
+
+
+we will set the longitudinal range to 0...50m and the lateral range to -25...+25m. The rationale for choosing this particular set
+of parameters is based partially on the original paper as well as on design
+choices in existing implementations of Complex YOLO.
+
+Let us start with the first step and remove all points from the lidar point cloud which do not fulfill the following criteria:
+
+0m<=px>=+50m
+-25m<=py>=+25m
+-1m<=p7>=3m
+
+
+In code, defining these limits looks like the following:
+
+lim_x = [0,50]
+lim_y = [-25,25]
+lim_z = [-1, 3]
+
+
+Next, we can use np.where to retrieve the points whose coordinates are within these limits:
+
+mask = np.where((lidar_pcl[:, 0] >= lim_x[0]) & (lidar_pcl[:, 0] <= lim_x[1]) &
+                   (lidar_pcl[:, 1] >= lim_y[0]) & (lidar_pcl[:, 1] <= lim_y[1]) &
+                   (lidar_pcl[:, 2] >= lim_z[0]) & (lidar_pcl[:, 2] <= lim_z[1]))
+lidar_pcl = lidar_pcl[mask]

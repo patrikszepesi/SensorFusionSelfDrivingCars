@@ -1,0 +1,74 @@
+SUMMARY: 3 ways to feed data into the input layer of a network:
+1. use point cloud directly
+2. transform it to a volumetric shape such as voxels or pillars
+3. compact the 3d point cloud into a 2d projection along a specific axis(pros of this is that you can feed a 2d image into proven detectors such as YOLO or ResNet)
+
+Complex YOLO algorithm, is really fast and suitable for real time
+
+we can convert a 3d point cloud into a 2d BEV(birds eye view) which can be used as input to YOLO
+
+extend the famous YOLO network for bounding box detection in 2D images to 3D point clouds.
+
+3 steps:
+
+1.point cloud conversion to BEV RGB Map
+2.Complex-YOLO on BEV Map
+3.bounding box re-conversion
+
+
+1. Transforming the point cloud into a bird's eye view (BEV)
+First, the 3D point cloud is converted into a bird's eye view (BEV), which is achieved by compacting the point cloud along the upward-facing
+axis (the zz-axis in the Waymo vehicle coordinate system). The BEV is divided into a grid consisting of equally sized cells,
+which enables us to treat it as an image, where each pixel corresponds to a region on the road surface. As can be seen from the
+following figure, several individual points often fall into the same grid element, especially on surfaces that are orthogonal to
+the road surface. The following figure illustrates the concept:IMAGE: point cloud onto grid cell can be treated as an image
+
+
+We can derive three pieces of information for each BEV cell, 1.which are the intensity of the points, 2.their height and their 3.density.
+Hence, the resulting BEV map will have three channels, which from the perspective of the detection network, makes it a color image.
+
+----------------PROCESS----------------
+The process of generating the BEV map is as follows:
+
+First, we need to decide the area we want to encompass. For the object detection in this course, we will set the longitudinal range to 0...50m and the lateral range to -25...+25m. The rationale for choosing this particular set of parameters is based partially on the original paper as well as on design choices in existing implementations of Complex YOLO.
+Then, we divide the area into a grid by specifying either the resolution of the resulting BEV image or by defining the size of a single grid cell. In our implementation, we are setting the size of the BEV image to 608 x 608 pixels, which results in a spatial resolution of \approx 8cm≈8cm.
+Now that we have divided the detection area into a grid, we need to identify the set of points P_{ij}P
+ij
+​
+  that falls into each cell, where i,ji,j are the respective cell coordinates. In the following, we will be using N_{i,j}N
+i,j
+​
+  to refer to the number of points in a cell. As proposed in the original paper, we will assign the following information to the three channels of each cell:
+Height H_{i,j} = \max\left(P_{i,j} \cdot \left[0,0,1\right]T\right)H
+i,j
+​
+ =max(P
+i,j
+​
+ ⋅[0,0,1]T)
+Intensity I_{i,j} = \max\left(I\left(P_{i,j}\right)\right)I
+i,j
+​
+ =max(I(P
+i,j
+​
+ ))
+Density D_{i,j} = \min\left( 1.0, \frac{\log(N+1)}{64}\right)D
+i,j
+​
+ =min(1.0,
+64
+log(N+1)
+​
+ )
+As you can see, H_{i,j}H
+i,j
+​
+  encodes the maximum height in a cell, I_{i,j}I
+i,j
+​
+  the maximum intensity and D_{i,j}D
+i,j
+​
+  the normalized density of all points mapped into the cell. The resulting BEV image (which you will be creating in the second part of this chapter) looks like the following:
+check image:
